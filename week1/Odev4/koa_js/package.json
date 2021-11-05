@@ -1,0 +1,15 @@
+{
+  "name": "koa_js",
+  "version": "1.0.0",
+  "description": "node test app2",
+  "main": "index.js",
+  "scripts": {
+    "test": "node npm"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dateformat": "^5.0.2",
+    "koa": "^2.13.4"
+  }
+}
