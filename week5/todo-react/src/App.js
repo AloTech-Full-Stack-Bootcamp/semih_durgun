@@ -9,6 +9,7 @@ const INITIAL_STATE = [
 export default function App() {
   const [list, setList] = useState(INITIAL_STATE);
   const [newTask, setNewTask] = useState("");
+  const [filterTask, setFilterTask] = useState(0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,6 +38,12 @@ export default function App() {
     setList(list.filter((item) => !item.completed));
   };
 
+  const markedAll = () => {
+    setList(
+      list.map((el) => (!el.completed ? {...el, completed: true} : el))
+    );
+  };
+
   return (
     <section class="todoapp">
       <header class="header">
@@ -53,34 +60,50 @@ export default function App() {
       </header>
 
       <section class="main">
-        <input class="toggle-all" type="checkbox" />
-        <label for="toggle-all">Mark all as completes</label>
-
+        <input
+          class="toggle-all"
+          type="checkbox"
+          onClick={() => markedAll()}
+        />
+        <label for="toggle-all" onClick={() => markedAll()}>Mark all as completes</label>
         <ul class="todo-list">
-          {list.map((item) => (
-            <li class={item.completed ? "completed" : "active"}>
-              <div class="view">
-                <input
-                  class="toggle"
-                  type="checkbox"
-                  checked={item.completed ? true : false}
-                />
-                <label
-                  onClick={() => {
-                    markCompleted(item.id);
-                  }}
-                >
-                  {item.title}
-                </label>
-                <button
-                  class="destroy"
-                  onClick={() =>
-                    setList(list.filter((el) => el.id !== item.id))
-                  }
-                ></button>
-              </div>
-            </li>
-          ))}
+          {list
+            .filter((item) => {
+              switch (filterTask) {
+                case 0:
+                  return item;
+                case 1:
+                  return item.completed === false;
+                case 2:
+                  return item.completed === true;
+                default:
+                  return item;
+              }
+            })
+            .map((item) => (
+              <li class={item.completed ? "completed" : "active"}>
+                <div class="view">
+                  <input
+                    class="toggle"
+                    type="checkbox"
+                    checked={item.completed ? true : false}
+                  />
+                  <label
+                    onClick={() => {
+                      markCompleted(item.id);
+                    }}
+                  >
+                    {item.title}
+                  </label>
+                  <button
+                    class="destroy"
+                    onClick={() =>
+                      setList(list.filter((el) => el.id !== item.id))
+                    }
+                  ></button>
+                </div>
+              </li>
+            ))}
         </ul>
       </section>
 
@@ -96,9 +119,8 @@ export default function App() {
           <li>
             <a
               href="/#"
-              onClick={() => {
-                setList(list);
-              }}
+              class={filterTask === 0 ? "selected" : " "}
+              onClick={() => setFilterTask(0)}
             >
               All
             </a>
@@ -106,9 +128,8 @@ export default function App() {
           <li>
             <a
               href="/#"
-              onClick={() => {
-                setList(list.filter((item) => item.completed === false));
-              }}
+              class={filterTask === 1 ? "selected" : " "}
+              onClick={() => setFilterTask(1)}
             >
               Active
             </a>
@@ -116,9 +137,8 @@ export default function App() {
           <li>
             <a
               href="/#"
-              onClick={() => {
-                setList(list.filter((item) => item.completed === true));
-              }}
+              class={filterTask === 2 ? "selected" : " "}
+              onClick={() => setFilterTask(2)}
             >
               Completed
             </a>
